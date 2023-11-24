@@ -161,8 +161,9 @@ app.post("/products", (req, res) => {
 app.get("/products/:id", (req, res) => {
   getProducts().then((products) => {
     const product = products.filter(
-      (product) => new ObjectId(product.id) === +req.params["id"]
+      (product) => product._id === new ObjectId(req.params["id"])
     )[0];
+    console.log(product);
     res.send(JSON.stringify(product));
   });
 });
@@ -189,7 +190,7 @@ app.post("/elected", (req, res) => {
 });
 
 app.delete("/elected/:id", (req, res) => {
-  deleteElected(+req.params["id"]);
+  deleteElected(req.params["id"]);
   res.send("200");
 });
 
