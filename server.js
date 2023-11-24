@@ -59,6 +59,20 @@ const getCategories = async () => {
   }
 };
 
+const addCategory = async (category) => {
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("electricirty-store");
+    const collection = db.collection("categories");
+    const results = await collection.insertOne(category);
+    return results;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await mongoClient.close();
+  }
+};
+
 const getUsers = async () => {
   try {
     await mongoClient.connect();
@@ -155,6 +169,11 @@ app.get("/products/:id", (req, res) => {
 
 app.get("/categories", (req, res) => {
   getCategories().then((categories) => res.send(JSON.stringify(categories)));
+});
+
+app.post("/categories", (req, res) => {
+  addCategory(req.body);
+  res.send("200");
 });
 
 app.get("/users", (req, res) => {
