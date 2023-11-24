@@ -42,6 +42,22 @@ const addProduct = async (product) => {
   }
 };
 
+const deleteProduct = async (productId) => {
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("electricirty-store");
+    const collection = db.collection("products");
+    const results = await collection.deleteOne({
+      _id: new ObjectId(productId),
+    });
+    return results;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await mongoClient.close();
+  }
+};
+
 const getCategories = async () => {
   try {
     await mongoClient.connect();
@@ -62,6 +78,22 @@ const addCategory = async (category) => {
     const db = mongoClient.db("electricirty-store");
     const collection = db.collection("categories");
     const results = await collection.insertOne(category);
+    return results;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await mongoClient.close();
+  }
+};
+
+const deleteCategory = async (categoryId) => {
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("electricirty-store");
+    const collection = db.collection("categories");
+    const results = await collection.deleteOne({
+      _id: new ObjectId(categoryId),
+    });
     return results;
   } catch (err) {
     console.log(err);
@@ -158,14 +190,9 @@ app.post("/products", (req, res) => {
   res.send("200");
 });
 
-app.get("/products/:id", (req, res) => {
-  getProducts().then((products) => {
-    const product = products.filter(
-      (product) => product._id === new ObjectId(req.params["id"])
-    )[0];
-    console.log(product);
-    res.send(JSON.stringify(product));
-  });
+app.delete("/products/:id", (req, res) => {
+  deleteProduct(req.params["id"]);
+  res.send("200");
 });
 
 app.get("/categories", (req, res) => {
@@ -174,6 +201,11 @@ app.get("/categories", (req, res) => {
 
 app.post("/categories", (req, res) => {
   addCategory(req.body);
+  res.send("200");
+});
+
+app.delete("/categories/:id", (req, res) => {
+  deleteCategory(req.params["id"]);
   res.send("200");
 });
 
