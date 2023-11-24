@@ -14,9 +14,6 @@ const mongoClient = new MongoClient(url);
 const app = express();
 const PORT = 3030;
 
-app.use(bodyParser.json());
-app.use(cors());
-
 const getProducts = async () => {
   try {
     await mongoClient.connect();
@@ -145,6 +142,9 @@ const deleteElected = async (productId) => {
   }
 };
 
+app.use(bodyParser.json());
+app.use(cors());
+
 app.get("/", (req, res) => {
   res.json("Welcome to Electricity store API");
 });
@@ -190,6 +190,7 @@ app.post("/elected", (req, res) => {
 
 app.delete("/elected/:id", (req, res) => {
   deleteElected(+req.params["id"]);
+  res.send("200");
 });
 
 app.post("/user/register", async (req, res) => {
