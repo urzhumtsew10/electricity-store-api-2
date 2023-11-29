@@ -187,12 +187,12 @@ app.get("/products", (req, res) => {
 
 app.post("/products", (req, res) => {
   addProduct(req.body);
-  res.send("200");
+  getProducts().then((data) => res.send(JSON.stringify(data)));
 });
 
 app.delete("/products/:id", (req, res) => {
   deleteProduct(req.params["id"]);
-  res.send("200");
+  getProducts().then((data) => res.send(JSON.stringify(data)));
 });
 
 app.get("/categories", (req, res) => {
@@ -201,12 +201,12 @@ app.get("/categories", (req, res) => {
 
 app.post("/categories", (req, res) => {
   addCategory(req.body);
-  res.send("200");
+  getCategories().then((categories) => res.send(JSON.stringify(categories)));
 });
 
 app.delete("/categories/:id", (req, res) => {
   deleteCategory(req.params["id"]);
-  res.send("200");
+  getCategories().then((categories) => res.send(JSON.stringify(categories)));
 });
 
 app.get("/users", (req, res) => {
