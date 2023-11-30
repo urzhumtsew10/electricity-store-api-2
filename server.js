@@ -80,7 +80,8 @@ const addCategory = async (category) => {
     const db = mongoClient.db("electricirty-store");
     const collection = db.collection("categories");
     const results = await collection.insertOne(category);
-    return results;
+    const categories = await collection.find().toArray();
+    return categories;
   } catch (err) {
     console.log(err);
   } finally {
@@ -96,7 +97,8 @@ const deleteCategory = async (categoryId) => {
     const results = await collection.deleteOne({
       _id: new ObjectId(categoryId),
     });
-    return results;
+    const categories = await collection.find().toArray();
+    return categories;
   } catch (err) {
     console.log(err);
   } finally {
@@ -207,7 +209,9 @@ app.post("/categories", (req, res) => {
 });
 
 app.delete("/categories/:id", (req, res) => {
-  deleteCategory(req.params["id"]).then(res.send(JSON.stringify(data)));
+  deleteCategory(req.params["id"]).then((data) =>
+    res.send(JSON.stringify(data))
+  );
 });
 
 app.get("/users", (req, res) => {
