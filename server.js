@@ -187,7 +187,7 @@ app.get("/products", (req, res) => {
 
 app.post("/products", (req, res) => {
   addProduct(req.body);
-  getProducts().then((data) => res.send("products"));
+  getProducts().then((data) => res.send(JSON.stringify(data)));
 });
 
 app.delete("/products/:id", (req, res) => {
