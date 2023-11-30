@@ -154,7 +154,8 @@ const addElected = async (product) => {
     const db = mongoClient.db("electricirty-store");
     const collection = db.collection("elected");
     const results = await collection.insertOne(product);
-    return results;
+    const elected = await collection.find().toArray();
+    return elected;
   } catch (err) {
     console.log(err);
   } finally {
@@ -170,7 +171,8 @@ const deleteElected = async (productId) => {
     const results = await collection.deleteOne({
       productId: productId,
     });
-    return results;
+    const elected = await collection.find().toArray();
+    return elected;
   } catch (err) {
     console.log(err);
   } finally {
@@ -223,12 +225,13 @@ app.get("/elected", (req, res) => {
 });
 
 app.post("/elected", (req, res) => {
-  addElected(req.body);
+  addElected(req.body).then((data) => res.send(JSON.stringify(data)));
 });
 
 app.delete("/elected/:id", (req, res) => {
-  deleteElected(req.params["id"]);
-  res.send("200");
+  deleteElected(req.params["id"]).then((data) =>
+    res.send(JSON.stringify(data))
+  );
 });
 
 app.post("/user/register", async (req, res) => {
