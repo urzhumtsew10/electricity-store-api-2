@@ -34,7 +34,8 @@ const addProduct = async (product) => {
     const db = mongoClient.db("electricirty-store");
     const collection = db.collection("products");
     const results = await collection.insertOne(product);
-    return results;
+    const products = await collection.find().toArray();
+    return products;
   } catch (err) {
     console.log(err);
   } finally {
@@ -50,7 +51,8 @@ const deleteProduct = async (productId) => {
     const results = await collection.deleteOne({
       _id: new ObjectId(productId),
     });
-    return results;
+    const products = await collection.find().toArray();
+    return products;
   } catch (err) {
     console.log(err);
   } finally {
@@ -186,13 +188,13 @@ app.get("/products", (req, res) => {
 });
 
 app.post("/products", (req, res) => {
-  addProduct(req.body);
-  getProducts().then((data) => res.send(JSON.stringify(data)));
+  addProduct(req.body).then((data) => res.send(JSON.stringify(data)));
 });
 
 app.delete("/products/:id", (req, res) => {
-  deleteProduct(req.params["id"]);
-  getProducts().then((data) => res.send(JSON.stringify(data)));
+  deleteProduct(req.params["id"]).then((data) =>
+    res.send(JSON.stringify(data))
+  );
 });
 
 app.get("/categories", (req, res) => {
@@ -205,8 +207,7 @@ app.post("/categories", (req, res) => {
 });
 
 app.delete("/categories/:id", (req, res) => {
-  deleteCategory(req.params["id"]);
-  getCategories().then((categories) => res.send(JSON.stringify(categories)));
+  deleteCategory(req.params["id"]).then(res.send(JSON.stringify(data)));
 });
 
 app.get("/users", (req, res) => {
