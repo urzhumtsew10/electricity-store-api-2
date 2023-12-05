@@ -180,6 +180,35 @@ const deleteElected = async (productId) => {
   }
 };
 
+const getOrders = async () => {
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("electricirty-store");
+    const collection = db.collection("orders");
+    const results = await collection.find().toArray();
+    return results;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await mongoClient.close();
+  }
+};
+
+const addOrder = async (order) => {
+  try {
+    await mongoClient.connect();
+    const db = mongoClient.db("electricirty-store");
+    const collection = db.collection("orders");
+    const results = await collection.insertOne(order);
+    const orders = await collection.find().toArray();
+    return orders;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await mongoClient.close();
+  }
+};
+
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -277,6 +306,14 @@ app.post("/user/auth", (req, res) => {
       res.send(JSON.stringify({ email: false, password: false }));
     }
   });
+});
+
+app.get("/orders", (req, res) => {
+  getOrders().then((orders) => res.send(JSON.stringify(orders)));
+});
+
+app.post("/order", (req, res) => {
+  addOrder(req.body).then((orders) => res.send(JSON.stringify(orders)));
 });
 
 app.listen(PORT, (err) => {
